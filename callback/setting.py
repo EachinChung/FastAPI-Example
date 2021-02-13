@@ -1,9 +1,12 @@
-from os import getenv
-
 import ujson as json
 from pydantic import BaseModel
 
-from callback import Env
+from callback.constants.enum import StrEnum
+
+
+class Env(StrEnum):
+    development = "development"
+    production = "production"
 
 
 class MySQL(BaseModel):
@@ -21,15 +24,19 @@ class Redis(BaseModel):
 
 
 class Setting(BaseModel):
+    version: str
+    env: Env
+    docs_url: str
+    redoc_url: str
     sentry_dsn: str
     mysql: MySQL
     redis: Redis
 
 
-def register_setting(config_name: str) -> Setting:
-    with open(f"config/{config_name}.json") as file:
+def register_setting() -> Setting:
+    with open(f"config.json") as file:
         config = Setting(**json.load(file))
     return config
 
 
-setting = register_setting(getenv("ENV", Env.development))
+setting = register_setting()

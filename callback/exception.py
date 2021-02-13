@@ -3,6 +3,7 @@ import time
 from typing import NoReturn, Optional
 
 from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import UJSONResponse
 
 from callback.constants.error_code import Error
@@ -15,12 +16,12 @@ class ApiHTTPException(Exception):
             message: str,
             *,
             code: str = "4000",
-            data: Optional[DictOrList] = None,
+            detail: Optional[DictOrList] = None,
             status_code: int = status.HTTP_400_BAD_REQUEST
     ):
         self.code = code
         self.message = message
-        self.data = data or {}
+        self.detail = detail or {}
         self.status_code = status_code
 
 
@@ -40,7 +41,28 @@ async def api_http_exception_handler(request: Request, exc: ApiHTTPException) ->
         content={
             "code": exc.code,
             "message": exc.message,
-            "data": exc.data,
+            "detail": exc.detail,
+            "now_ts": int(time.time())
+        },
+    )
+
+
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """处理参数校验错误
+
+    Args:
+        request (Request)
+        exc (RequestValidationError)
+
+    Returns:
+        UJSONResponse
+    """
+    return UJSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={
+            "code": "4220",
+            "message": "请求参数不正确",
+            "detail": exc.errors(),
             "now_ts": int(time.time())
         },
     )
@@ -63,7 +85,7 @@ async def exception_handler(request: Request, exc: Exception) -> UJSONResponse:
         content={
             "code": code,
             "message": message,
-            "data": {},
+            "detail": {},
             "now_ts": int(time.time())
         },
     )
@@ -72,3 +94,4 @@ async def exception_handler(request: Request, exc: Exception) -> UJSONResponse:
 def register_global_exception(app: FastAPI) -> NoReturn:
     app.add_exception_handler(Exception, exception_handler)
     app.add_exception_handler(ApiHTTPException, api_http_exception_handler)
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)

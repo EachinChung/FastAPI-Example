@@ -1,6 +1,6 @@
 import uvicorn
 
-from callback import create_app
+from callback.main import create_app
 
 app = create_app()
 

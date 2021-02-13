@@ -1,12 +1,10 @@
 import functools
-from os import getenv
 from typing import NoReturn, Optional
 from urllib import parse
 
 import sentry_sdk
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-from callback import Env
 from callback.constants.types import Event, Hint
 from callback.setting import setting
 
@@ -14,8 +12,8 @@ from callback.setting import setting
 def register_sentry():
     sentry_sdk.init(
         dsn=setting.sentry_dsn,
-        release="callback@1.1.4",
-        environment=getenv("ENV", Env.development.value),
+        release=f"callback@{setting.version}",
+        environment=setting.env,
         traces_sample_rate=0.2,
     )
 

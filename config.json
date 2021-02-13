@@ -1,4 +1,8 @@
 {
+  "version": "1.1.4",
+  "env": "development",
+  "docs_url": "/docs",
+  "redoc_url": "/redoc",
   "sentry_dsn": "http://6b2aca03d2274a26985c358be38df34d@127.0.0.1:9000/2",
   "mysql": {
     "host": "localhost",

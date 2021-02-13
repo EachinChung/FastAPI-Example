@@ -14,8 +14,8 @@ create table users
     json_extent json                                        null comment 'json拓展',
     create_at   datetime          default CURRENT_TIMESTAMP not null comment '创建时间',
     modified_at datetime          default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    index `username` (username),
     unique index phone (phone),
+    index `username` (username),
     index create_at (create_at)
 ) comment '用户表';
 

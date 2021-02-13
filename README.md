@@ -2,7 +2,7 @@
 [![_](https://img.shields.io/badge/python-3.9.1-informational.svg)](https://www.python.org/)
 [![_](https://img.shields.io/badge/mysql-8.0.23-9cf.svg)](https://www.mysql.com/)
 
-一个FastAPI的项目示例
+一个FastAPI的项目示例(回调系统)
 
 
 ## 项目使用说明
