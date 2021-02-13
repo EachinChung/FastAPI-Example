@@ -1,20 +1,18 @@
 import logging
 from typing import NoReturn
 
-from aioredis import Redis
-
 from callback.constants.url import WechatUrl
 from callback.dao import configs
 from callback.exception import ApiHTTPException
 from callback.lib.network import requests
-from callback.lib.redis import redis
+from callback.lib.redis import use_main_rides
 from callback.lib.utils import get_unsafe_dict_value
 
 
 async def get_access_token() -> str:
-    main_redis: Redis = redis.main
+    redis = use_main_rides()
     cakey = "wechat:access_token"
-    access_token = await main_redis.get(cakey, encoding="utf-8")
+    access_token = await redis.get(cakey, encoding="utf-8")
     if access_token is not None:
         return access_token
 
@@ -33,7 +31,7 @@ async def get_access_token() -> str:
     })
 
     access_token = get_unsafe_dict_value(result, "access_token")
-    main_redis.set(cakey, access_token, expire=7000)
+    redis.set(cakey, access_token, expire=7000)
     return access_token
 
 
