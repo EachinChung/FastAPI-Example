@@ -5,6 +5,7 @@ from typing import NoReturn, Optional
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import UJSONResponse
+from starlette.exceptions import HTTPException
 
 from callback.constants.error_code import Error
 from callback.constants.types import DictOrList
@@ -68,6 +69,18 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return UJSONResponse(
+        status_code=exc.status_code,
+        content={
+            "code": f"{exc.status_code}0",
+            "message": exc.detail,
+            "detail": {},
+            "now_ts": int(time.time())
+        },
+    )
+
+
 async def exception_handler(request: Request, exc: Exception) -> UJSONResponse:
     """处理全局错误
 
@@ -93,5 +106,6 @@ async def exception_handler(request: Request, exc: Exception) -> UJSONResponse:
 
 def register_global_exception(app: FastAPI) -> NoReturn:
     app.add_exception_handler(Exception, exception_handler)
+    app.add_exception_handler(HTTPException, http_exception_handler)
     app.add_exception_handler(ApiHTTPException, api_http_exception_handler)
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
