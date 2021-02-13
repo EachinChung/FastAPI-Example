@@ -1,0 +1,15 @@
+{
+  "sentry_dsn": "http://6b2aca03d2274a26985c358be38df34d@127.0.0.1:9000/2",
+  "mysql": {
+    "host": "localhost",
+    "user": "root",
+    "password": "123456",
+    "port": 3306,
+    "database": "my_apis"
+  },
+  "redis": {
+    "host": "localhost",
+    "main_db": 0,
+    "default_db": 1
+  }
+}
