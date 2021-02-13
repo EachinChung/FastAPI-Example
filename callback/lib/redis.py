@@ -10,8 +10,8 @@ redis_pool = GetSetTer()
 
 
 async def register_redis():
-    redis_pool.main = await create_redis_pool(f"redis://{setting.redis_pool.host}/{setting.redis_pool.main_db}")
-    redis_pool.value = await create_redis_pool(f"redis://{setting.redis_pool.host}/{setting.redis_pool.default_db}")
+    redis_pool.main = await create_redis_pool(f"redis://{setting.redis.host}/{setting.redis.main_db}")
+    redis_pool.value = await create_redis_pool(f"redis://{setting.redis.host}/{setting.redis.default_db}")
 
 
 # noinspection PyUnresolvedReferences
